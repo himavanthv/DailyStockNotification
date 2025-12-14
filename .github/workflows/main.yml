@@ -1,0 +1,27 @@
+name: Daily Stock Notifications
+
+on:
+  schedule:
+    - cron: '42 3 * * *'   # Runs daily at 9:00 AM IST
+  workflow_dispatch:      # Allows manual run
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt || true
+
+      - name: Run script
+        run: |
+          python PreOpen.py
