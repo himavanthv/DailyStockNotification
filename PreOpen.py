@@ -16,5 +16,6 @@ morethan1pcchange = abs(stockstobeconsidered['pChange']) > 1
 finalobservationstocks = stockstobeconsidered[morethan1pcchange]
 #print(finalobservationstocks)
 
-send_telegram_notification('Todays Stocks with more than 1% change\n'+finalobservationstocks['symbol'].to_string())
+send_telegram_notification('Todays Stocks with more than 1% change\n'+finalobservationstocks[['symbol','pChange']].to_string())
+
 
