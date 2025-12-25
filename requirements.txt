@@ -5,3 +5,4 @@ pytz
 yfinance
 numpy
 nsepython
+pandas_ta
