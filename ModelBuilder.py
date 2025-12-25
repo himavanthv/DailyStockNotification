@@ -51,8 +51,9 @@ for i in range(10):
         time.sleep(0.5)
     markdown_msg = datafornotification.to_markdown(index=False)
     formatted_payload = f"```\n{markdown_msg}\n```"
-    current_time_ist = datetime.datetime.now(ist_timezone)
+    current_time_ist = datetime.now(ist_timezone)
     send_telegram_notification("Analysis report at Time:"+ current_time_ist +"\n"+formatted_payload)
+
 
 
 
