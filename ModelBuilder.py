@@ -34,6 +34,7 @@ def get_signal_for_timeframe(df_1m, interval):
 preopenstocks = PO.PreOpen()
 #Run for all PreOpen Market Data Stocks to Every 30 mints
 #Send Telegram Notification
+ist_timezone = pytz.timezone('Asia/Kolkata')
 for i in range(1):
     #time.sleep(1983)
     time.sleep(30)
@@ -49,5 +50,7 @@ for i in range(1):
         time.sleep(0.5)
     markdown_msg = datafornotification.to_markdown(index=False)
     formatted_payload = f"```\n{markdown_msg}\n```"
-    send_telegram_notification("Analysis report at Time:"+ datetime.now().strftime("%H:%M:%S") +"\n"+formatted_payload)
+    current_time_ist = datetime.datetime.now(ist_timezone)
+    send_telegram_notification("Analysis report at Time:"+ current_time_ist +"\n"+formatted_payload)
+
 
