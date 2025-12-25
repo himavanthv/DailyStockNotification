@@ -1,8 +1,6 @@
 name: Daily Stock Notifications
 
 on:
-  schedule:
-    - cron: '42 3 * * *'   # Runs daily at 9:00 AM IST
   workflow_dispatch:      # Allows manual run
 
 jobs:
