@@ -1,5 +1,4 @@
 import nse_data_fetcher as nse
-import pandas_ta as ta
 import numpy as np
 import pandas as pd
 import PreOpen as PO
@@ -51,3 +50,4 @@ for i in range(1):
     markdown_msg = datafornotification.to_markdown(index=False)
     formatted_payload = f"```\n{markdown_msg}\n```"
     send_telegram_notification("Analysis report at Time:"+ datetime.now().strftime("%H:%M:%S") +"\n"+formatted_payload)
+
