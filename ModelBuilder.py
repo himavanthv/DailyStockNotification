@@ -35,7 +35,7 @@ preopenstocks = PO.PreOpen()
 #Run for all PreOpen Market Data Stocks to Every 30 mints
 #Send Telegram Notification
 ist_timezone = pytz.timezone('Asia/Kolkata')
-for i in range(1):
+for i in range(10):
     #time.sleep(1983)
     time.sleep(30)
     datafornotification = ""
@@ -52,5 +52,6 @@ for i in range(1):
     formatted_payload = f"```\n{markdown_msg}\n```"
     current_time_ist = datetime.datetime.now(ist_timezone)
     send_telegram_notification("Analysis report at Time:"+ current_time_ist +"\n"+formatted_payload)
+
 
 
