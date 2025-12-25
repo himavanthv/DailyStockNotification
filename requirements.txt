@@ -5,4 +5,6 @@ pytz
 yfinance
 numpy
 nsepython
+tabulate
+
 
