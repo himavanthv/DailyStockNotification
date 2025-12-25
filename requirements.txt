@@ -6,5 +6,7 @@ yfinance
 numpy
 nsepython
 tabulate
+pytz
+
 
 
