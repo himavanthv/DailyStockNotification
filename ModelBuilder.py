@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 import PreOpen as PO
 import time
+import pytz
 from Sendnotification import send_telegram_notification
 from datetime import datetime
 
@@ -52,6 +53,7 @@ for i in range(10):
     formatted_payload = f"```\n{markdown_msg}\n```"
     current_time_ist = datetime.datetime.now(ist_timezone)
     send_telegram_notification("Analysis report at Time:"+ current_time_ist +"\n"+formatted_payload)
+
 
 
 
