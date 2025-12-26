@@ -37,23 +37,25 @@ preopenstocks = PO.PreOpen()
 #Send Telegram Notification
 time.sleep(120)
 ist_timezone = pytz.timezone('Asia/Kolkata')
-for i in range(10):
-    time.sleep(1800)
+for i in range(30):
+    time.sleep(60)
     #time.sleep(30)
     datafornotification = ""
-    datafornotification = pd.DataFrame(columns=['Stock Symbol','Current 15-minute Trend','Current 30-minute Trend','Current 60-minute Trend'])
+    datafornotification = pd.DataFrame(columns=['Stock Symbol','Current 5-minute Trend','Current 15-minute Trend','Current 30-minute Trend','Current 60-minute Trend'])
     for row in preopenstocks['symbol']:
         print("Ticker Value:"+row)
         data_1minute = getoneminutedata(row)
+        signal_5m = get_signal_for_timeframe(data_1minute,'5T')
         signal_15m = get_signal_for_timeframe(data_1minute, '15T')
         signal_30m = get_signal_for_timeframe(data_1minute, '30T')
         signal_60m = get_signal_for_timeframe(data_1minute, '60T')
-        datafornotification.loc[len(datafornotification)] = [row, signal_15m, signal_30m, signal_60m]
+        datafornotification.loc[len(datafornotification)] = [row,signal_5m,signal_15m, signal_30m, signal_60m]
         #time.sleep(0.5)
     markdown_msg = datafornotification.to_markdown(index=False)
     formatted_payload = f"```\n{markdown_msg}\n```"
     current_time_ist = datetime.now(ist_timezone)
     send_telegram_notification("Analysis report at Time:"+ current_time_ist.strftime("%H:%M:%S") +"\n"+formatted_payload)
+
 
 
 
