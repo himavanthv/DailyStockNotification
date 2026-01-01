@@ -43,7 +43,7 @@ merged_all = pd.merge(gainers, losers, on='symbol', how='outer')
 merged_all = pd.merge(merged_all, preopenstocks, on='symbol', how='outer')
 
 ist_timezone = pytz.timezone('Asia/Kolkata')
-for i in range(30):
+for i in range(1):
     datafornotification = ""
     datafornotification = pd.DataFrame(columns=['Stock Symbol','Current 5-minute Trend','Current 15-minute Trend','Current 30-minute Trend','Current 60-minute Trend'])
     for index, row in merged_all.iterrows():
@@ -58,4 +58,5 @@ for i in range(30):
     formatted_payload = f"```\n{markdown_msg}\n```"
     current_time_ist = datetime.now(ist_timezone)
     send_telegram_notification("Analysis report at Time:"+ current_time_ist.strftime("%H:%M:%S") +"\n"+formatted_payload)
+
     time.sleep(60)
