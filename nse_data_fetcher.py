@@ -1,12 +1,15 @@
 import yfinance as yf
 import pandas as pd
 import numpy as np
+import talib as ta
 def fetch_data(ticker_symbol,candleinterval,timeperiod):
-    custom_names = ['Close','High','Low','Open','Volume','SMA_5','SMA_15','SMA_30']
-    data = yf.download(ticker_symbol, interval=candleinterval, period=timeperiod)
-    data['SMA_5'] = data['Close'].rolling(window=5,min_periods=2).mean()
-    data['SMA_15'] = data['Close'].rolling(window=15,min_periods=2).mean()
-    data['SMA_30'] = data['Close'].rolling(window=30,min_periods=2).mean()
+    custom_names = ['Close','High','Low','Open','Volume','SMA_9','SMA_26','SMA_50','RSI_14']
+    data = yf.download(ticker_symbol, interval=candleinterval, period=timeperiod, progress=False, auto_adjust=True)
+    data['SMA_9'] = data['Close'].rolling(window=9,min_periods=1).mean()
+    data['SMA_26'] = data['Close'].rolling(window=26,min_periods=1).mean()
+    data['SMA_50'] = data['Close'].rolling(window=50,min_periods=1).mean()
+    close_prices = data['Close'].iloc[:, 0] if isinstance(data['Close'], pd.DataFrame) else data['Close']
+    data['RSI_14'] = ta.RSI(close_prices, timeperiod=14)
     data.columns = custom_names
     try:
         data.index = data.index.tz_convert('Asia/Kolkata')
