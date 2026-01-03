@@ -1,62 +1,52 @@
 import nse_data_fetcher as nse
 import numpy as np
 import pandas as pd
-import PreOpen as PO
 import time
 import pytz
 from Sendnotification import send_telegram_notification
 from datetime import datetime
 
 def getoneminutedata(ticker_symbol):
-    data_1minute=nse.fetch_data(ticker_symbol+".NS","1m","5d")
-    return  data_1minute
+    data=nse.fetch_data(ticker_symbol+".NS","30m","30d")
+    return  data
 
 
-def get_signal_for_timeframe(df_1m, interval):
-    resampled_df = df_1m.resample(interval).agg({
-        'Open': 'first',
-        'High': 'max',
-        'Low': 'min',
-        'Close': 'last'
-    }).dropna()
-    resampled_df['SMA_5'] = resampled_df['Close'].rolling(window=5).mean()
-    resampled_df['SMA_15'] = resampled_df['Close'].rolling(window=15).mean()
-    if len(resampled_df) < 15:
-        return "Insufficient Data"
-    
-    last_row = resampled_df.iloc[-1]
-    prev_row = resampled_df.iloc[-2]
-    if last_row['SMA_5'] > last_row['SMA_15']:
-        return "Bullish"
-    elif last_row['SMA_5'] < last_row['SMA_15']:
-        return "Bearish"
+def performanalysis(data):
+    data.dropna(inplace=True)
+    dataLen=len(data)
+    prev_short = data['SMA_9'].iloc[2]
+    prev_long = data['SMA_26'].iloc[2]
+    curr_short = data['SMA_9'].iloc[1]
+    curr_long = data['SMA_26'].iloc[1]
+    latestshort = data['SMA_9'].iloc[0]
+    latestlong = data['SMA_26'].iloc[0]
+    previousclose=data['Close'].iloc[1]
+    percentema=((latestshort-latestlong)/latestshort)*100
+    if prev_short <= prev_long and curr_short > curr_long and previousclose>curr_short and percentema>0.15:
+        return "BULLISH Crossover detected on the current (most recent closed) candle."
+    elif prev_short >= prev_long and curr_short < curr_long and previousclose<curr_short and percentema<-0.15:
+        return "BEARISH Crossover detected on the current (most recent closed) candle."
     else:
-        return "Neutral"
-preopenstocks = PO.PreOpen()
-#Run for all PreOpen Market Data Stocks to Every 30 mints
-#Send Telegram Notification
-#time.sleep(5)
-
-gainers = PO.get_top_gainers()
-losers = PO.get_top_losers()
-merged_all = pd.merge(gainers, losers, on='symbol', how='outer')
-merged_all = pd.merge(merged_all, preopenstocks, on='symbol', how='outer')
+        return "No new crossover detected on the latest candle."
 
 ist_timezone = pytz.timezone('Asia/Kolkata')
-for i in range(30):
+allstocks = pd.read_csv('AllOptionsStocks.csv')
+
+for i in range(1):
     datafornotification = ""
-    datafornotification = pd.DataFrame(columns=['Stock Symbol','Current 5-minute Trend','Current 15-minute Trend','Current 30-minute Trend','Current 60-minute Trend'])
-    for index, row in merged_all.iterrows():
-        symbol = row['symbol']
-        data_1minute = getoneminutedata(symbol)
-        signal_5m = get_signal_for_timeframe(data_1minute,'5T')
-        signal_15m = get_signal_for_timeframe(data_1minute, '15T')
-        signal_30m = get_signal_for_timeframe(data_1minute, '30T')
-        signal_60m = get_signal_for_timeframe(data_1minute, '60T')
-        datafornotification.loc[len(datafornotification)] = [symbol,signal_5m,signal_15m, signal_30m, signal_60m]
+    datafornotification = pd.DataFrame(columns=['Stock Symbol','Analysis'])
+    for index, row in allstocks.iterrows():
+        symbol = row['Symbol']
+        try:
+            data_1minute = getoneminutedata(symbol)
+        except:
+            print('Download Error '+ symbol)
+            continue
+        analysisresult = performanalysis(data_1minute)
+        if analysisresult=='No new crossover detected on the latest candle.':
+            continue
+        datafornotification.loc[len(datafornotification)] = [symbol,analysisresult]
     markdown_msg = datafornotification.to_markdown(index=False)
     formatted_payload = f"```\n{markdown_msg}\n```"
     current_time_ist = datetime.now(ist_timezone)
     send_telegram_notification("Analysis report at Time:"+ current_time_ist.strftime("%H:%M:%S") +"\n"+formatted_payload)
-    time.sleep(60)
-
