@@ -29,9 +29,9 @@ def performanalysis(data):
     prevrsi3=data['RSI_14'].iloc[3]
     prevchange = ((prevclose-prevopen)/prevopen)*100
     percentma=((latestshort-latestlong)/latestshort)*100
-    if prev_short <= prev_long and curr_short > curr_long and currropen>curr_short and currrsi>prevrsi1 and prevrsi1>prevrsi2 and prevrsi2>prevrsi3 and currrsi>60:
+    if prev_short <= prev_long and curr_short > curr_long and currropen>curr_short and currrsi>prevrsi1 and prevrsi1>prevrsi2 and prevrsi2>prevrsi3 and currrsi>50:
         return "BULLISH Crossover detected on the current (most recent closed) candle."
-    elif prev_short >= prev_long and curr_short < curr_long and currropen<curr_short and currrsi<prevrsi1 and prevrsi1<prevrsi2 and prevrsi2<prevrsi3 and currrsi<40:
+    elif prev_short >= prev_long and curr_short < curr_long and currropen<curr_short and currrsi<prevrsi1 and prevrsi1<prevrsi2 and prevrsi2<prevrsi3 and currrsi<50:
         return "BEARISH Crossover detected on the current (most recent closed) candle."
     else:
         return "No new crossover detected on the latest candle."
@@ -59,4 +59,5 @@ for i in range(1):
     current_time_ist = datetime.now(ist_timezone)
     print('End Time '+datetime.now(ist_timezone).strftime("%H:%M:%S"))
     #print(datafornotification)
+
     send_telegram_notification("Analysis report at Time:"+ current_time_ist.strftime("%H:%M:%S") +"\n"+formatted_payload)
