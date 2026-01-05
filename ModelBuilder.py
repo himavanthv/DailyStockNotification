@@ -7,7 +7,7 @@ from Sendnotification import send_telegram_notification
 from datetime import datetime
 
 def getoneminutedata(ticker_symbol):
-    data=nse.fetch_data(ticker_symbol+".NS","15m","15d")
+    data=nse.fetch_data(ticker_symbol+".NS","30m","15d")
     return  data
 
 
