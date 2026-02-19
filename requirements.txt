@@ -2,7 +2,7 @@ requests
 nsepy
 pandas
 pytz
-yfinance
+yfinance>=0.2.10
 numpy
 nsepython
 tabulate
