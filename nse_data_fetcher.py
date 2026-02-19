@@ -11,9 +11,9 @@ def fetch_data(ticker_symbol,candleinterval,timeperiod):
     close_prices = data['Close'].iloc[:, 0] if isinstance(data['Close'], pd.DataFrame) else data['Close']
     data['RSI_14'] = ta.RSI(close_prices, timeperiod=14)
     data.columns = custom_names
-    try:
-        data.index = data.index.tz_convert('Asia/Kolkata')
-    except TypeError:
-        data.index = data.index.tz_localize('UTC').tz_convert('Asia/Kolkata')
+    #try:
+      #  data.index = data.index.tz_convert('Asia/Kolkata')
+   # except TypeError:
+       # data.index = data.index.tz_localize('UTC').tz_convert('Asia/Kolkata')
     data_newest_first = data.sort_index(ascending=False)
     return data_newest_first
