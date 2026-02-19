@@ -7,7 +7,7 @@ from Sendnotification import send_telegram_notification
 from datetime import datetime
 
 def getoneminutedata(ticker_symbol):
-    data=nse.fetch_data(ticker_symbol+".NS",",15m","5d")
+    data=nse.fetch_data(ticker_symbol+".NS","15m","15d")
     return  data
 
 
@@ -49,6 +49,7 @@ for i in range(1):
             data_1minute = getoneminutedata(symbol)
         except:
             print('Download Error '+ symbol)
+            ##print('Download Error '+ Error)
             continue
         analysisresult = performanalysis(data_1minute)
         if analysisresult=='No new crossover detected on the latest candle.':
@@ -59,5 +60,4 @@ for i in range(1):
     current_time_ist = datetime.now(ist_timezone)
     print('End Time '+datetime.now(ist_timezone).strftime("%H:%M:%S"))
     #print(datafornotification)
-
     send_telegram_notification("Analysis report at Time:"+ current_time_ist.strftime("%H:%M:%S") +"\n"+formatted_payload)
